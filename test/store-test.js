@@ -13,8 +13,8 @@ describe('make-store.js', () => {
         const myObject = { body : 'i like it :)' };
         const destination = './test-dir';
 
-        const writtenFile = store.save( myObject,  );
         const retrievedFile = store.get( writtenFile._id,  );
+        const writtenFile = store.save( myObject, retrievedFile );
         
         assert.deepEqual( writtenFile, retrievedFile );
     });
