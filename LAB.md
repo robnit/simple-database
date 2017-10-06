@@ -121,7 +121,7 @@ Tests:
 
 * For the setup, make sure the target root directory has been removed (don't recreate in the setup because the db instance should do that when getting a store).
 
-1. Test that calling `getStore` returns via the callback an instance of the `Store` class. (See `instanceOf` on mdn) 
+1. Test that calling `getStore` returns via the callback an instance of the `Store` class. (See `instanceOf` on mdn). Also test that the `store.root` property (or whatever you called the store's root directory property) is the correct filepath.
 1. Create two store instances, test that the contents of the root directory are the two names of the stores create. (`fs.readdir` _will_ return directory names)
 
 ## Rubric:
