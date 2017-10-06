@@ -1,0 +1,32 @@
+{
+  "name": "simple-database",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "dependencies": {
+    "eslint": "^4.8.0",
+    "mkdirp": "^0.5.1",
+    "rimraf": "^2.6.2",
+    "shortid": "^2.2.8"
+  },
+  "devDependencies": {
+    "mocha": "^4.0.1"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/robnit/simple-database.git"
+  },
+  "author": "Robin Miller <rmillerpdx@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/robnit/simple-database/issues"
+  },
+  "homepage": "https://github.com/robnit/simple-database#readme"
+}
