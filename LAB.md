@@ -20,8 +20,14 @@ You library:
   an instance of a `Store` class (Store is like a Table)
  
   ```js
-  // inside createStore:   
-  return new Store(path.join(this.rootDir, storeName));
+  createStore(name, callback) {
+      const storeDir = path.join(this.rootDir, name);
+      mkdirp(storeDir, err => {
+          if(err) return callback(err);
+          const store = new Store(storeDir);
+          callback(null, store);
+      }
+  }
   ```
   
 * `store.js`
@@ -31,8 +37,14 @@ You library:
 ```js
 const makeDb = require('../lib/make-db');
 const db = makeDb('./name-of-directory');
-const cats = db.createStore('cats');
-const buildings = db.createStore('buildings');
+const cats = db.createStore('cats', (err, store) => {
+    // use the cats store
+});
+
+const buildings = db.createStore('buildings', (err, store) => {
+    // use the buildings store
+});
+
 ```
 
 The store offers `save`, `get`, `getAll`, and `remove` methods.
@@ -76,9 +88,10 @@ Here is an example of how your module might be imported (required) and used:
 
 const makeDb = require('../lib/make-db');
 const db = makeDb(path.join(__dirname, 'data'));
-const animals = db.createStore('animals');
 
-animals.save({ name: 'garfield' }, (err, cat) => {
+db.createStore('animals', (err, animals) => {
+    
+  animals.save({ name: 'garfield' }, (err, cat) => {
   
     if(err) return console.log('ERROR', err);
     
@@ -88,11 +101,12 @@ animals.save({ name: 'garfield' }, (err, cat) => {
       if(err) return console.log('ERROR', err);
       console.log('got cat', cat);
     } 
-});
+  });
 
-animals.getAll((err, animals) => {
-  if(err) return console.log('ERROR', err);
-  console.log('we have', animals.length, 'animals');
+  animals.getAll((err, animals) => {
+    if(err) return console.log('ERROR', err);
+    console.log('we have', animals.length, 'animals');
+  });
 });
 ```
 
