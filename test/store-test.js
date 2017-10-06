@@ -1,11 +1,12 @@
 const assert = require('assert');
-const fs = require('fs');
-const path = require('path');
+// const fs = require('fs');
+// const path = require('path');
 const rimraf = require('rimraf');
 const mkdirp = require('mkdirp');
 
-const store = require('../lib/make-store');
+const Store = require('../lib/make-store');
 const destination = './test-dir';
+let store = null;
 describe('make-store.js', () => {
 
     beforeEach( done =>{
@@ -16,21 +17,22 @@ describe('make-store.js', () => {
                 done();
             });
         });
+        store = new Store;
     });
 
     it('should save an object and get it based on ._id', (done) => {
         const myObject = { body : 'i like it :)' };
         
-        store.save( myObject, (err,saved) => {
+        store.save( myObject, (err, saved) => {
             if(err) return done(err);
 
             assert.ok(saved._id);
-            assert.equal(saved.body,myObject.body);
+            assert.equal(saved.body, myObject.body);
 
             store.get(saved._id, (err, got) => {
                 if(err) return done(err);
-                
-                assert.deepEqual(saved,got);
+
+                assert.deepEqual(saved, got);
                 done();
             });
         });
