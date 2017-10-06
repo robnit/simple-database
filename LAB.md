@@ -1,146 +1,128 @@
 Simple Database
 ===
 
-## Doc/Resources
-* [Node fs docs](https://nodejs.org/api/fs.html) - specifically the methods `readFile` and `writeFile`
-* [Node path docs](https://nodejs.org/api/path.html) - specifically the methods `join`
+Build a simple object database that stores and retrieves from the file system.
 
-* JSON [stringify](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify) 
+Standard repository/dev stuff: `README.md`, `package.json`, `.gitignore`, `.eslintrc`, `.travis.yml`, tests, meaningful commits, named npm scripts, etc.
+
+**Pair on this assignment**
+
+## Doc/Resources
+* [Node fs docs](https://nodejs.org/api/fs.html) - specifically the methods `readdir`, `readFile`, `writeFile`, and `unlink`
+* [Node path docs](https://nodejs.org/api/path.html) - specifically the methods `join` and possibly `resolve`
+* JSON [stringify](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
 and [parse](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse)
-* Checkout `mkdirp` and `rimraf` on `npm`
+* Checkout `mkdirp` and `rimraf` on npm
 
 ## Description:
 
-You library:
+You library will have two parts:
 
-* `make-db.js`
-  * function that takes a root directory and synchronously returns an instance of a `Db` class
-  * `Db` - class that takes a root directory in constructor and has a `createStore` method that 
-  takes the name of the type of objects in the Store and returns
-  an instance of a `Store` class (Store is like a Table).
-  
-  Here is the function to get you started. Notice a) it is async, and b) it ensures the store directory exists:
- 
-  ```js
-  createStore(name, callback) {
-      const storeDir = path.join(this.rootDir, name);
-      mkdirp(storeDir, err => {
-          if(err) return callback(err);
-          const store = new Store(storeDir);
-          callback(null, store);
-      }
-  }
-  ```
-  
-* `store.js`
-  * class that takes a directory that it should use and manages object of "store". It has the methods listed below
-  
- 
-```js
-const makeDb = require('../lib/make-db');
-const db = makeDb('./name-of-directory');
-const cats = db.createStore('cats', (err, store) => {
-    // use the cats store
-});
+1. A `Store` class that stores and retrieves objects by writing and reading them to files in the directory.
+2. A `Db` class that creates `Store` instances and assigns them a directory based on a supplied "name" of the type of object to be stored.
 
-const buildings = db.createStore('buildings', (err, store) => {
-    // use the buildings store
-});
-
-```
-
-The store offers `save`, `get`, `getAll`, and `remove` methods.
-
-Use json as a file format to store (serialized and deserialized) javascript objects.
-
-**You need to pair on this assignment**
-
-## Testing
-
-You should use TDD to drive the implementation. 
-
-**Start by TDDing the Store class**
-
-The setup for the test can be difficult as we want to ensure the tests start with a "clean" file directory 
-**(hint: this is where `rimraf` will come in handy)** 
-You will want to read about [Mocha's before/after hooks](https://mochajs.org/#hooks)
-
-Your tests will need to handle asynchronous calls.  You will need to read about [Mocha and async support](https://mochajs.org/#asynchronous-code)
-
-## Requirements/Guidelines
-
-For today, your db should offer the following methods:
-
-* `.save(<objectToSave>, callback)`
-  * creates a `_id` property for the object
-  * saves the object in a file, where the filename is the `_id`. e.g. if the id is 12345, the file will be 12345.json
-  * returns `objectToSave` with added `_id` property
-* `.get(<id>, callback)`
-  * returns the object from the requested table that has that id
-  * return `null` if that id does not exist
-* `.getAll(callback)`
-  * returns array of all objects from the requested table
-  * return empty array `[]` when no objects
-* `.remove(<id>, callback)`
-  * removes the object
-  * return `{ removed: true }` or `{ removed: false }`
-
-
-Here is an example of how your module might be imported (required) and used:
+Here is an example of how your module would be imported (required) and used:
 
 ```js
 
-const makeDb = require('../lib/make-db');
-const db = makeDb(path.join(__dirname, 'data'));
+const Db = require('../lib/make-db');
+const rootDirectory = path.join(__dirname, 'data');
+const db = new Db(rootDirectory);
 
-db.createStore('animals', (err, animals) => {
-    
+db.getStore('animals', (err, animals) => {
+  
   animals.save({ name: 'garfield' }, (err, cat) => {
-  
-    if(err) return console.log('ERROR', err);
-    
-    const id = cat._id;
-    
-    animals.get(id, (err, cat) => {
-      if(err) return console.log('ERROR', err);
-      console.log('got cat', cat);
-    } 
-  });
 
-  animals.getAll((err, animals) => {
-    if(err) return console.log('ERROR', err);
-    console.log('we have', animals.length, 'animals');
+    animals.get(cat._id, (err, cat) => {
+      console.log('got cat', cat);
+      // { name: 'garfield' }
+    } 
+
   });
 });
 ```
 
-Make sure to test:
+Here is an example of how the directories and files would be structured:
 
-* Two types of "objects" (e.g. "animals" vs "stores")
-* Two different id's of same object type.
+```
+---+ data
+    |
+    +--+ animals
+      |
+      +---* 34fdr5.json
+      |
+      +---* 65rej5.json
+      |
+      +---* 93odb2.json
+    |
+    +--+ buildings
+      |
+      +---* 3tlf4.json
+      |
+      +---* 23dew3.json
+```
+
+## Process
+
+Use TDD to drive the implementation. 
+
+The setup for the tests will require that you **start with a "clean" file directory**. This is where `rimraf` and `mkdirp` will come in handy in your [Mocha's before/after hooks](https://mochajs.org/#hooks). 
+
+Your tests will need to handle asynchronous calls.  You will need to read about [Mocha and async support](https://mochajs.org/#asynchronous-code).
+
+**Follow the order below when creating the modules**
+
+### `Store`
+
+A Class with a constructor that takes the root directory it should save and read files to and from. The directory should already exist. It has the following methods:
+
+1. `.save(<objectToSave>, callback)`
+    * Creates a `_id` property for the object (You can use third-party npm module)
+    * Saves the object to a file, where the filename is the `_id`. For example, if the id is 3k4e66, the file will be `3k4e66.json`
+    * The callback will be called with the saved object that has the added `_id` property
+1. `.get(<id>, callback)`
+    * The callback will be called with the deserialized (JSON.parse) object that has that id
+    * If an object with that id does not exists, call the callback with `null`
+1. `.remove(<id>, callback)`
+    * The store should removes the file of the object with that id.
+    * Call the callback with `{ removed: true }`, or `{ removed: false }` if the id did not exist
+1. `.getAll(callback)`
+    * Call the callback with array of all objects in the directory. (hint: can you use the store's `get(id)` method as part of this?) 
+    * Call the callback with an empty array `[]` when no objects.
+
+TDD the above methods on the `Store` class. Test that the objects are handled correctly by using the API methods, but do **not** test that the files were written to the directory
+
+Tests:
+
+* For the setup, make sure the directory to pass to the store has been removed and then
+recreated
+
+1. Pass an object to the `.save` method and assert that the saved object has an _id property. Use that _id to `.get` the object and test that "got" object is semantically the same as original object.
+2. Pass a bad id to `.get` and assert that `null` is returned for the callback.
+3. Save an object, then pass its _id to `.remove` and check that `{ removed: true }` is returned
+for the callback. Pass the _id to `.get` and assert that `null` is returned.
+4. Pass a bad id to `.remove` and assert that `{ removed: false }` is returned
+for the callback.
+5. For a newly create store, test that `.getAll` returns an empty array `[]` for the callback.
+6. Save a few objects, then test that `.getAll` returns an array of those objects.
+
+### `Db`
+
+A Class with a constructor that takes the root directory that it will use to create and assign directories to requested `store` instances. It has the following method:
 
 
-  ```
-  ---+ data
-     |
-     +--+ animals
-        |
-        +---* 34fdr5.json
-        |
-        +---* 65rej5.json
-        |
-        +---* 93odb2.json
-     |
-     +--+ buildings
-        |
-        +---* 3tlf4.json
-        |
-        +---* 23dew3.json
-  ```
-      
-* Use `JSON.parse` and `JSON.stringify` to move from javascript object to file representation
+1. `getStore(name, callback)`
+    * Ensures the the directory "name" exists as a directory in Db's root directory. (hint: use `mkdirp`)
+    * Calls the callback with a new store instance that was passed the path to the directory from the prior step.
+   
+TDD the above method on the `Db` class. Because the responsibility of the Db class is to ensure that the directory exists, you **should** test that the directories created for the `Store` instances exists.
 
-Standard repository/dev stuff: README, package.json, travis-ci, tests, meaningful commits, named npm scripts, etc.
+Tests:
+
+* For the setup, make sure the target root directory has been removed (don't recreate in the setup because the db instance should do that when getting a store).
+
+1. Test that calling `getStore` returns via the callback an instance of the `Store` class. (See `instanceOf` on mdn) 
+1. Create two store instances, test that the contents of the root directory are the two names of the stores create. (`fs.readdir` _will_ return directory names)
 
 ## Rubric:
 
