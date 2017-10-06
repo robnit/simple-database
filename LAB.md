@@ -14,10 +14,12 @@ and [parse](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Gl
 You library:
 
 * `make-db.js`
-  * function that takes a root directory and returns an instance of a `Db` class
+  * function that takes a root directory and synchronously returns an instance of a `Db` class
   * `Db` - class that takes a root directory in constructor and has a `createStore` method that 
   takes the name of the type of objects in the Store and returns
-  an instance of a `Store` class (Store is like a Table)
+  an instance of a `Store` class (Store is like a Table).
+  
+  Here is the function to get you started. Notice a) it is async, and b) it ensures the store directory exists:
  
   ```js
   createStore(name, callback) {
@@ -51,11 +53,13 @@ The store offers `save`, `get`, `getAll`, and `remove` methods.
 
 Use json as a file format to store (serialized and deserialized) javascript objects.
 
-**You are strongly encouraged to pair on this assignment**
+**You need to pair on this assignment**
 
 ## Testing
 
 You should use TDD to drive the implementation. 
+
+**Start by TDDing the Store class**
 
 The setup for the test can be difficult as we want to ensure the tests start with a "clean" file directory 
 **(hint: this is where `rimraf` will come in handy)** 
