@@ -17,6 +17,8 @@
     "mocha": "^4.0.1"
   },
   "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
     "test": "mocha"
   },
   "repository": {
