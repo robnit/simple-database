@@ -24,7 +24,6 @@ describe('make-store.js', () => {
     it('should save an object and get it based on ._id', (done) => {
         const myObject = { data : 'i like it :)' };
         
-
         store.save(myObject, (err, objectSaved) => {
             if (err) return done(err);
 
@@ -38,9 +37,11 @@ describe('make-store.js', () => {
                 done();
 
             });
+
         });
 
     });
+
 
     it('call callback with null if id is bad', (done) => {
         store.get('bad id', (err, objectGot) => {
@@ -48,12 +49,10 @@ describe('make-store.js', () => {
             assert.deepEqual(objectGot, null);
             done();
         });
-      
-
-    
     });
 
-    it.only('remove should call the callback with {remove:true} if something was removed', (done) => {
+
+    it('remove should call the callback with {remove:true} if something was removed', (done) => {
         const myObject = { data : 'i like it removed please' };
         store.save(myObject, (err, objectSaved) => {
             if (err) return done(err);
@@ -66,6 +65,7 @@ describe('make-store.js', () => {
         });
     });
 
+
     it('remove should call the callback with {remove:false} if path did not exist', (done) => {
         store.remove('rubbish', (err, objectRemoved) => {
             if (err) return done(err);
@@ -73,4 +73,22 @@ describe('make-store.js', () => {
             done();
         });
     });
+
+    it('get an array of objects from getAll method', (done) => {
+        const objectOne = { data: 'cat' };
+        const objectTwo = { data: 'dog' };
+        
+        store.save( objectOne, (err, savedObjectOne) => {
+            if (err) return done(err); 
+            store.save( objectTwo, (err, savedObjectTwo) => {
+                if (err) return done(err);
+                store.getAll( (err, objectArray) =>{
+                    if (err) return done(err);
+                    assert.deepEqual( objectArray, [savedObjectOne, savedObjectTwo] );
+                });
+            });
+        });
+
+    });
+
 });
