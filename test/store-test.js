@@ -85,6 +85,7 @@ describe('make-store.js', () => {
                 store.getAll( (err, objectArray) =>{
                     if (err) return done(err);
                     assert.deepEqual( objectArray, [savedObjectOne, savedObjectTwo] );
+                    done();
                 });
             });
         });
