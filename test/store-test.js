@@ -89,7 +89,14 @@ describe('make-store.js', () => {
                 });
             });
         });
+    });
 
+    it.skip('getAll() returns empty array if no files exist in directory', (done) => {
+        store.getAll( (err, objectArray) => {
+            if (err) return done(err);
+            assert.deepEqual( objectArray, [] );
+            done();
+        });
     });
 
 });
