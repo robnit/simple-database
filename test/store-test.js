@@ -25,16 +25,16 @@ describe('make-store.js', () => {
         const myObject = { data : 'i like it :)' };
         
 
-        store.save(myObject, (err, saved) => {
+        store.save(myObject, (err, objectSaved) => {
             if (err) return done(err);
 
-            assert.ok(saved._id);
-            assert.equal(saved.data, myObject.data);
+            assert.ok(objectSaved._id);
+            assert.equal(objectSaved.data, myObject.data);
 
-            store.get(saved._id, (err, got) => {
+            store.get(objectSaved._id, (err, objectGot) => {
                 if (err) return done(err);
 
-                assert.deepEqual(saved, got);
+                assert.deepEqual(objectSaved, objectGot);
                 done();
 
             });
@@ -43,11 +43,34 @@ describe('make-store.js', () => {
     });
 
     it('call callback with null if id is bad', (done) => {
-        store.get('bad id', (err, got) => {
+        store.get('bad id', (err, objectGot) => {
             if (err) return done(err);
-            assert.deepEqual(null, got);
+            assert.deepEqual(objectGot, null);
             done();
         });
       
+
+    
+    });
+
+    it('remove should call the callback with {remove:true} if something was removed', (done) => {
+        const myObject = { data : 'i like it removed please' };
+        store.save(myObject, (err, objectSaved) => {
+            if (err) return done(err);
+
+            store.remove(objectSaved._id, (err, objectRemoved) => {
+                if (err) return done(err);
+                assert.deepEqual(objectRemoved, {removed: true});
+                done();
+            });
+        });
+    });
+
+    it('remove should call the callback with {remove:false} if path did not exist', (done) => {
+        store.remove('rubbish', (err, objectRemoved) => {
+            if (err) return done(err);
+            assert.deepEqual(objectRemoved, {removed: false});
+            done();
+        });
     });
 });
