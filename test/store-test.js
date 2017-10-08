@@ -53,11 +53,11 @@ describe('make-store.js', () => {
     
     });
 
-    it('remove should call the callback with {remove:true} if something was removed', (done) => {
+    it.only('remove should call the callback with {remove:true} if something was removed', (done) => {
         const myObject = { data : 'i like it removed please' };
         store.save(myObject, (err, objectSaved) => {
             if (err) return done(err);
-
+          
             store.remove(objectSaved._id, (err, objectRemoved) => {
                 if (err) return done(err);
                 assert.deepEqual(objectRemoved, {removed: true});
