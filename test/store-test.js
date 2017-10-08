@@ -77,14 +77,23 @@ describe('make-store.js', () => {
     it('get an array of objects from getAll method', (done) => {
         const objectOne = { data: 'cat' };
         const objectTwo = { data: 'dog' };
+        const expectedArray = [];
+        const sortedExpected = expectedArray.sort(function(a, b){
+            if(a._id < b._id) return -1;
+            if(a._id > b._id) return 1;
+        }); 
         
         store.save( objectOne, (err, savedObjectOne) => {
             if (err) return done(err); 
+            expectedArray.push(savedObjectOne);
             store.save( objectTwo, (err, savedObjectTwo) => {
                 if (err) return done(err);
+                expectedArray.push(savedObjectTwo);
                 store.getAll( (err, objectArray) =>{
                     if (err) return done(err);
-                    assert.deepEqual( objectArray, [savedObjectOne, savedObjectTwo] );
+                    console.log('actual',objectArray);
+                    console.log('expected',sortedExpected);
+                    assert.deepEqual( objectArray, sortedExpected);
                     done();
                 });
             });
