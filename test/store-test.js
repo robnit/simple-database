@@ -13,9 +13,9 @@ describe('make-store.js', () => {
 
     beforeEach( done =>{
         rimraf(rootDir, err =>{
-            if(err) return done(err);
+            if (err) return done(err);
             mkdirp(rootDir, err =>{
-                if(err) return done(err);
+                if (err) return done(err);
                 done();
             });
         });
@@ -26,13 +26,13 @@ describe('make-store.js', () => {
         
 
         store.save(myObject, (err, saved) => {
-            if(err) return done(err);
+            if (err) return done(err);
 
             assert.ok(saved._id);
             assert.equal(saved.data, myObject.data);
 
             store.get(saved._id, (err, got) => {
-                if(err) return done(err);
+                if (err) return done(err);
 
                 assert.deepEqual(saved, got);
                 done();
@@ -42,5 +42,12 @@ describe('make-store.js', () => {
 
     });
 
-
+    it('call callback with null if id is bad', (done) => {
+        store.get('bad id', (err, got) => {
+            if (err) return done(err);
+            assert.deepEqual(null, got);
+            done();
+        });
+      
+    });
 });
