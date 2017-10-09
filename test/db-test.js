@@ -34,10 +34,11 @@ describe.only('make-db.js', () => {
             if (err) return done(err);
             store.save({dog:'awsome'}, (err, savedObject1)=>{
                 if (err) return done(err);
-                savedArray.push(savedObject1);
+                savedArray.push(savedObject1._id+'.json');
                 store.save({cat: 'is evil'}, (err, savedObject2)=>{
                     if (err) return done(err);
-                    savedArray.push(savedObject2);
+                    console.log('saved object 2',savedObject2);
+                    savedArray.push(savedObject2._id +'.json');
                     const storePath = path.join(rootDir, 'dog');
                     fs.readdir(storePath, 'utf8', (err, readFiles) => {
                         readFiles.sort( (a, b) => {
@@ -45,10 +46,12 @@ describe.only('make-db.js', () => {
                             if(a._id > b._id) return 1;
                         });
                         savedArray.sort( (a, b) => {
-                            if(a._id < b._id) return -1;
-                            if(a._id > b._id) return 1;
+                            if(a < b) return -1;
+                            if(a > b) return 1;
                         });
-                        assert.equal(readFiles, savedArray);
+                        console.log('savedArray:',savedArray),
+                        console.log('readFiles:',readFiles),
+                        assert.deepEqual(readFiles, savedArray);
                         done();
                     });
                 });
