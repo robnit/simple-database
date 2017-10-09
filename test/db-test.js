@@ -19,7 +19,6 @@ describe.only('make-db.js', () => {
     });
 
     it('calling getStore returns an instance of the Store class with correct rootDir property', (done) => {
-
         db.getStore('dog', (err, store)=>{
             if (err) return done(err);
             assert.ok(store instanceof Store);
