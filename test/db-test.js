@@ -19,7 +19,6 @@ describe.only('make-db.js', () => {
     });
 
     it('calling getStore returns an instance of the Store class with correct rootDir property', (done) => {
-
         db.getStore('dog', (err, store)=>{
             if (err) return done(err);
             assert.ok(store instanceof Store);
@@ -37,7 +36,6 @@ describe.only('make-db.js', () => {
                 savedArray.push(savedObject1._id+'.json');
                 store.save({cat: 'is evil'}, (err, savedObject2)=>{
                     if (err) return done(err);
-                    console.log('saved object 2',savedObject2);
                     savedArray.push(savedObject2._id +'.json');
                     const storePath = path.join(rootDir, 'dog');
                     fs.readdir(storePath, 'utf8', (err, readFiles) => {
@@ -49,8 +47,6 @@ describe.only('make-db.js', () => {
                             if(a < b) return -1;
                             if(a > b) return 1;
                         });
-                        console.log('savedArray:',savedArray),
-                        console.log('readFiles:',readFiles),
                         assert.deepEqual(readFiles, savedArray);
                         done();
                     });
@@ -59,7 +55,7 @@ describe.only('make-db.js', () => {
         });
     });
 
-    it('creates two store instances, verify that they exist', (done) => {
+    it('create two store instances, verify that they exist', (done) => {
         db.getStore('rat', (err) => {
             if (err) return done(err);
             db.getStore('bat', (err) => {
