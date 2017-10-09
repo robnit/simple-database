@@ -9,8 +9,7 @@ const Store = require('../lib/make-store');
 const Db = require('../lib/make-db');
 const rootDir = path.join(__dirname, 'test-dir');
 
-const db = new Db();
-
+const db = new Db(rootDir);
 
 describe('make-db.js', () => {
 
@@ -23,11 +22,14 @@ describe('make-db.js', () => {
 
     it('calling getStore returns an instance of the Store class with correct rootDir property', (done) => {
 
-        db.getStore('dog', (err, data)=>{
+        db.getStore('dog', (err, store)=>{
             if (err) return done(err);
-            // assert.ok()
+            assert.ok(store instanceof Store);
+            assert.equal(store.rootDir, path.join(rootDir, 'dog'));
+            done();
         });
 
+        //
         //TODO: test that the store.rootDir property is the correct filepath
     });
 });
