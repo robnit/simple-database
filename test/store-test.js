@@ -85,7 +85,7 @@ describe('make-store.js', () => {
             store.save( objectTwo, (err, savedObjectTwo) => {
                 if (err) return done(err);
                 expectedArray.push(savedObjectTwo);
-                store.getAll( (err, objectArray) =>{
+                store.getAll( (err, objectArray) => {
                     if (err) return done(err);
                     expectedArray.sort(function(a, b){
                         if(a._id < b._id) return -1;

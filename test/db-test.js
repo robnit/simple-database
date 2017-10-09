@@ -55,7 +55,7 @@ describe.only('make-db.js', () => {
         });
     });
 
-    it('creates two store instances, verify that they exist', (done) => {
+    it('create two store instances, verify that they exist', (done) => {
         db.getStore('rat', (err) => {
             if (err) return done(err);
             db.getStore('bat', (err) => {
