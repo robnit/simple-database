@@ -1,17 +1,15 @@
 const assert = require('assert');
-const fs = require('fs');
-
 const path = require('path');
 const rimraf = require('rimraf');
-const mkdirp = require('mkdirp');
 
 const Store = require('../lib/make-store');
 const Db = require('../lib/make-db');
-const rootDir = path.join(__dirname, 'test-dir');
 
+
+const rootDir = path.join(__dirname, 'test-dir');
 const db = new Db(rootDir);
 
-describe('make-db.js', () => {
+describe.only('make-db.js', () => {
 
     beforeEach( done => {
         rimraf(rootDir, err => {
@@ -24,12 +22,10 @@ describe('make-db.js', () => {
 
         db.getStore('dog', (err, store)=>{
             if (err) return done(err);
+            store.save({dog:'awsome'});
             assert.ok(store instanceof Store);
             assert.equal(store.rootDir, path.join(rootDir, 'dog'));
             done();
         });
-
-        //
-        //TODO: test that the store.rootDir property is the correct filepath
     });
 });
