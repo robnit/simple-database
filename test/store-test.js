@@ -79,7 +79,6 @@ describe('make-store.js', () => {
         const objectTwo = { data: 'dog' };
         const expectedArray = [];
         
-        
         store.save( objectOne, (err, savedObjectOne) => {
             if (err) return done(err); 
             expectedArray.push(savedObjectOne);
@@ -88,12 +87,10 @@ describe('make-store.js', () => {
                 expectedArray.push(savedObjectTwo);
                 store.getAll( (err, objectArray) =>{
                     if (err) return done(err);
-                    console.log('actual',objectArray);
                     const sortedExpected = expectedArray.sort(function(a, b){
                         if(a._id < b._id) return -1;
                         if(a._id > b._id) return 1;
                     });
-                    console.log('in getAll test! Sorted Expected',sortedExpected);
                     assert.deepEqual( objectArray, sortedExpected);
                     done();
                 });
@@ -104,7 +101,6 @@ describe('make-store.js', () => {
     it('getAll() returns empty array if no files exist in directory', (done) => {
         store.getAll( (err, objectArray) => {
             if (err) return done(err);
-            console.log('object array is', objectArray);
             assert.deepEqual( objectArray, [] );
             done();
         });
