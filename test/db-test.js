@@ -9,7 +9,7 @@ const Db = require('../lib/make-db');
 const rootDir = path.join(__dirname, 'test-dir');
 const db = new Db(rootDir);
 
-describe.only('make-db.js', () => {
+describe('make-db.js', () => {
 
     beforeEach( done => {
         rimraf(rootDir, err => {
@@ -67,7 +67,5 @@ describe.only('make-db.js', () => {
             });
         });
     });
-
-
 
 });
