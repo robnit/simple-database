@@ -28,7 +28,7 @@ describe.only('make-db.js', () => {
         });
     });
 
-    it('should create two store instances and tests that they actually exist', (done) => {
+    it('create two files in a database and verify that they exist', (done) => {
         db.getStore('dog', (err, store)=>{
             const savedArray =[];
             if (err) return done(err);
@@ -57,8 +57,19 @@ describe.only('make-db.js', () => {
                 });
             });
         });
+    });
 
-
+    it('creates two store instances, verify that they exist', (done) => {
+        db.getStore('rat', (err) => {
+            if (err) return done(err);
+            db.getStore('bat', (err) => {
+                if (err) return done(err);
+                fs.readdir(rootDir, 'utf8', (err, names) => {
+                    assert.deepEqual(names, ['bat', 'rat']);
+                    done();
+                });
+            });
+        });
     });
 
 
