@@ -87,7 +87,6 @@ describe('make-store.js', () => {
                 expectedArray.push(savedObjectTwo);
                 store.getAll( (err, objectArray) =>{
                     if (err) return done(err);
-                    //Why does this need to be here in order for the code to work?
                     expectedArray.sort(function(a, b){
                         if(a._id < b._id) return -1;
                         if(a._id > b._id) return 1;
