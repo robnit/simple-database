@@ -1,5 +1,5 @@
 const assert = require('assert');
-// const fs = require('fs');
+
 const path = require('path');
 const rimraf = require('rimraf');
 const mkdirp = require('mkdirp');
