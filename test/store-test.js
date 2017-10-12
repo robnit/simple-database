@@ -39,23 +39,23 @@ describe('make-store.js', () => {
 
 
 
-    it.only('call callback with null if id is bad', () => {
+    it('call callback with null if id is bad', () => {
         store.get('bad id')
             .then( (objectGot) => assert.deepEqual(objectGot, null) );
     });
 
 
-    it('remove should call the callback with {remove:true} if something was removed', (done) => {
+    it.only('remove should call the callback with {remove:true} if something was removed', () => {
         const myObject = { data : 'i like it removed please' };
-        store.save(myObject, (err, objectSaved) => {
-            if (err) return done(err);
-          
-            store.remove(objectSaved._id, (err, objectRemoved) => {
-                if (err) return done(err);
+        return store.save(myObject)
+            .then( (objectSaved) => {
+                console.log('objectSaved is', objectSaved);
+                return store.remove(objectSaved._id);
+            })
+            .then( (objectRemoved) => {
+                console.log('objectRemoved is', objectRemoved);
                 assert.deepEqual(objectRemoved, {removed: true});
-                done();
             });
-        });
     });
 
 
