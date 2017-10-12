@@ -16,15 +16,13 @@ const mkdirpPromise = promisify(mkdirp);
 describe('make-store.js', () => {
 
     beforeEach( () => {
-
         return rimrafPromise(rootDir)
             .then( () => {
                 return mkdirpPromise(rootDir);  
             });
-
     });
 
-    it.only('should save an object and get it based on ._id', () => {
+    it('should save an object and get it based on ._id', () => {
         const myObject = { data : 'i like it :)' };
         let objectSaved = null;
         store.save(myObject)
@@ -41,12 +39,9 @@ describe('make-store.js', () => {
 
 
 
-    it('call callback with null if id is bad', (done) => {
-        store.get('bad id', (err, objectGot) => {
-            if (err) return done(err);
-            assert.deepEqual(objectGot, null);
-            done();
-        });
+    it.only('call callback with null if id is bad', () => {
+        store.get('bad id')
+            .then( (objectGot) => assert.deepEqual(objectGot, null) );
     });
 
 
