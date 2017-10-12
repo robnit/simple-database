@@ -59,36 +59,37 @@ describe('make-store.js', () => {
     });
 
 
-    it.only('remove should call the callback with {remove:false} if path did not exist', () => {
+    it('remove should call the callback with {remove:false} if path did not exist', () => {
         return store.remove('rubbish')
             .then( (objectRemoved)=> {
                 assert.deepEqual(objectRemoved, {removed: false});
             });
     });
 
-    it('get an array of objects from getAll method', (done) => {
-        const objectOne = { data: 'cat' };
-        const objectTwo = { data: 'dog' };
-        const expectedArray = [];
-        
-        store.save( objectOne, (err, savedObjectOne) => {
-            if (err) return done(err); 
-            expectedArray.push(savedObjectOne);
-            store.save( objectTwo, (err, savedObjectTwo) => {
-                if (err) return done(err);
-                expectedArray.push(savedObjectTwo);
-                store.getAll( (err, objectArray) => {
-                    if (err) return done(err);
-                    expectedArray.sort(function(a, b){
-                        if(a._id < b._id) return -1;
-                        if(a._id > b._id) return 1;
-                    });
-                    assert.deepEqual( objectArray, expectedArray);
-                    done();
+    it.only('get an array of objects from getAll method', () => {
+
+        const toSaveArray = [ 
+            { data: 'cat' },
+            { data: 'dog' }
+        ];
+        let saved = null;
+        return Promise.all([ 
+            toSaveArray.map(element => {
+                return store.save(element);
+            })
+        ])
+            .then( (promiseArray) => {  
+                saved = promiseArray;
+                return promiseArray.sort(function(a, b){
+                    if(a._id < b._id) return -1;
+                    if(a._id > b._id) return 1;
                 });
+            })
+            .then( (sortedPromiseArray) => {
+                assert.deepEqual(saved, sortedPromiseArray);
             });
-        });
     });
+
 
     it('getAll() returns empty array if no files exist in directory', (done) => {
         store.getAll( (err, objectArray) => {
