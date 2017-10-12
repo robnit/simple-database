@@ -24,7 +24,7 @@ describe('make-store.js', () => {
 
     });
 
-    it('should save an object and get it based on ._id', () => {
+    it.only('should save an object and get it based on ._id', () => {
         const myObject = { data : 'i like it :)' };
         let objectSaved = null;
         store.save(myObject)
