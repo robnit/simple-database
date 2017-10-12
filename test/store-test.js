@@ -9,16 +9,19 @@ const rootDir = path.join(__dirname, 'test-dir');
 
 const store = new Store(rootDir);
 
+const promisify = require('util').promisify;
+const rimrafPromise = promisify(rimraf);
+const mkdirpPromise = promisify(mkdirp);
+
 describe('make-store.js', () => {
 
-    beforeEach( done =>{
-        rimraf(rootDir, err =>{
-            if (err) return done(err);
-            mkdirp(rootDir, err =>{
-                if (err) return done(err);
-                done();
+    beforeEach( () => {
+
+        return rimrafPromise(rootDir)
+            .then( () => {
+                return mkdirpPromise(rootDir);  
             });
-        });
+
     });
 
     it('should save an object and get it based on ._id', (done) => {
