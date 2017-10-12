@@ -24,26 +24,21 @@ describe('make-store.js', () => {
 
     });
 
-    it('should save an object and get it based on ._id', (done) => {
+    it('should save an object and get it based on ._id', () => {
         const myObject = { data : 'i like it :)' };
-        
-        store.save(myObject, (err, objectSaved) => {
-            if (err) return done(err);
-
-            assert.ok(objectSaved._id);
-            assert.equal(objectSaved.data, myObject.data);
-
-            store.get(objectSaved._id, (err, objectGot) => {
-                if (err) return done(err);
-
+        let objectSaved = null;
+        store.save(myObject)
+            .then(saved => {
+                objectSaved = saved;
+                assert.ok(objectSaved._id);
+                assert.equal(objectSaved.data, myObject.data);
+                return store.get(objectSaved._id);
+            })
+            .then (objectGot => {
                 assert.deepEqual(objectSaved, objectGot);
-                done();
-
             });
-
-        });
-
     });
+
 
 
     it('call callback with null if id is bad', (done) => {
