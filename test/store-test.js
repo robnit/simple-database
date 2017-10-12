@@ -59,12 +59,11 @@ describe('make-store.js', () => {
     });
 
 
-    it.only('remove should call the callback with {remove:false} if path did not exist', (done) => {
-        store.remove('rubbish', (err, objectRemoved) => {
-            if (err) return done(err);
-            assert.deepEqual(objectRemoved, {removed: false});
-            done();
-        });
+    it.only('remove should call the callback with {remove:false} if path did not exist', () => {
+        return store.remove('rubbish')
+            .then( (objectRemoved)=> {
+                assert.deepEqual(objectRemoved, {removed: false});
+            });
     });
 
     it('get an array of objects from getAll method', (done) => {
