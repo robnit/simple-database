@@ -45,7 +45,7 @@ describe('make-store.js', () => {
     });
 
 
-    it.only('remove should call the callback with {remove:true} if something was removed', () => {
+    it('remove should call the callback with {remove:true} if something was removed', () => {
         const myObject = { data : 'i like it removed please' };
         return store.save(myObject)
             .then( (objectSaved) => {
@@ -59,7 +59,7 @@ describe('make-store.js', () => {
     });
 
 
-    it('remove should call the callback with {remove:false} if path did not exist', (done) => {
+    it.only('remove should call the callback with {remove:false} if path did not exist', (done) => {
         store.remove('rubbish', (err, objectRemoved) => {
             if (err) return done(err);
             assert.deepEqual(objectRemoved, {removed: false});
