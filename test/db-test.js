@@ -43,17 +43,15 @@ describe('make-db.js', () => {
             })
             .then( (readFiles) => {
                 readFiles.sort((a,b) => a._id > b._id ? -1 : 1);
-                return assert.deepEqual(readFiles, savedArray);
+                assert.deepEqual(readFiles, savedArray);
             });
     });
-
 
     it('create two store instances, verify that they exist', () => {
         return db.getStore('rat')
             .then( () => db.getStore('bat') )
             .then( () => readdirPromise(rootDir) )
             .then( (names) => assert.deepEqual(names, ['bat', 'rat']) );
-    
     });
 
 });

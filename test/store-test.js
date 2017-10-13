@@ -25,7 +25,7 @@ describe('make-store.js', () => {
     it('should save an object and get it based on ._id', () => {
         const myObject = { data : 'i like it :)' };
         let objectSaved = null;
-        store.save(myObject)
+        return store.save(myObject)
             .then(saved => {
                 objectSaved = saved;
                 assert.ok(objectSaved._id);
@@ -39,7 +39,7 @@ describe('make-store.js', () => {
 
 
     it('call callback with null if id is bad', () => {
-        store.get('bad id')
+        return store.get('bad id')
             .then( (objectGot) => assert.deepEqual(objectGot, null) );
     });
 
