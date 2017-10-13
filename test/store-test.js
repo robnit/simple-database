@@ -10,7 +10,7 @@ const rootDir = path.join(__dirname, 'test-dir');
 
 const store = new Store(rootDir);
 
-describe.only('make-store.js', () => {
+describe('make-store.js', () => {
 
     beforeEach( () =>{
         return rimraf(rootDir)
@@ -21,24 +21,25 @@ describe.only('make-store.js', () => {
 
     it('should save an object and get it based on ._id', () => {
         const myObject = { data : 'i like it :)' };
+        let saved = null;
         
-        store.save(myObject)
+        return store.save(myObject)
             .then ((data)=>{
+                saved = data;
                 assert.ok(data._id);
                 assert.equal(data.data, myObject.data);
-                store.get(data._id)
-                    .then((objectGot)=> {
-                        assert.deepEqual(data, objectGot);
-                    });
-
+                return store.get(data._id);
+            })
+            .then((objectGot)=> {
+                assert.deepEqual(saved, objectGot);
             });
-
     });
 
 
     it('call callback with null if id is bad', () => {
-        store.get('bad id')
+        return store.get('bad id')
             .then( (objectGot) =>{
+                console.log('objectGot:',objectGot);
                 assert.deepEqual(objectGot, null);
             });
     });
@@ -46,12 +47,12 @@ describe.only('make-store.js', () => {
 
     it('remove should call the callback with {remove:true} if something was removed', () => {
         const myObject = { data : 'i like it removed please' };
-        store.save(myObject)
+        return store.save(myObject)
             .then ( (objectSaved) => {
-                store.remove(objectSaved._id)
-                    .then( (objectRemoved) => {
-                        assert.deepEqual(objectRemoved, {removed: true});
-                    });
+                return store.remove(objectSaved._id);
+            })
+            .then( (objectRemoved) => {
+                assert.deepEqual(objectRemoved, {removed: true});
             });
     });
 
@@ -66,29 +67,23 @@ describe.only('make-store.js', () => {
     it('get an array of objects from getAll method', () => {
         const objectOne = { data: 'cat' };
         const objectTwo = { data: 'dog' };
-        const expectedArray = [];
+        let saved = [];
         
-        store.save( objectOne ) 
-            .then( (savedObjectOne) => {
-                expectedArray.push(savedObjectOne);
-            })
 
-            .then ( () =>{
-                store.save( objectTwo )
-                    .then( (savedObjectTwo) => {
-                        expectedArray.push(savedObjectTwo);
-                    });
+        return Promise.all ([
+            store.save( objectOne ),
+            store.save( objectTwo )
+        ])
+            .then ( (data) => {
+                saved = data;
+                return store.getAll();
             })
-
-            .then ( () => {
-                store.getAll()
-                    .then ( (objectArray)=> {
-                        expectedArray.sort(function(a, b){
-                            if(a._id < b._id) return -1;
-                            if(a._id > b._id) return 1;
-                        });
-                        assert.deepEqual( objectArray, expectedArray);
-                    });
+            .then ( (objectArray)=> {
+                saved.sort(function(a, b){
+                    if(a._id < b._id) return -1;
+                    if(a._id > b._id) return 1;
+                });
+                assert.deepEqual( objectArray, saved);
             });
     });
 

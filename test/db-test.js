@@ -17,50 +17,46 @@ describe('make-db.js', () => {
     beforeEach( () => rimraf(rootDir) );
 
     it('calling getStore returns an instance of the Store class with correct rootDir property', () => {
-        db.getStore('dog')
-            .then ( (store) => assert.ok(store instanceof Store))
-            .then ( (store) =>assert.equal(store.rootDir, path.join(rootDir, 'dog')));
+        return db.getStore('dog')
+            .then ( (store) =>{
+                assert.equal(store.rootDir, path.join(rootDir, 'dog'));
+                assert.ok(store instanceof Store);
+            });
     });
 
 
-    it('create two files in a database and verify that they exist', (done) => {
-        db.getStore('dog')
-            .then ( (store)=> { 
-                const savedArray =[];
-                store.save({dog:'awsome'}, (err, savedObject1)=>{
-                    if (err) return done(err);
-                    savedArray.push(savedObject1._id+'.json');
-                    store.save({cat: 'is evil'}, (err, savedObject2)=>{
-                        if (err) return done(err);
-                        savedArray.push(savedObject2._id +'.json');
-                        const storePath = path.join(rootDir, 'dog');
-                        fs.readdir(storePath, 'utf8', (err, readFiles) => {
-                            readFiles.sort( (a, b) => {
-                                if(a._id < b._id) return -1;
-                                if(a._id > b._id) return 1;
-                            });
-                            savedArray.sort( (a, b) => {
-                                if(a < b) return -1;
-                                if(a > b) return 1;
-                            });
-                            assert.deepEqual(readFiles, savedArray);
-                            done();
-                        });
-                    });
-                });
+    it('create two files in a database and verify that they exist', () => {
+        let savedArray = null;
+        let store = null;
+        return db.getStore('dog')
+            .then ( (gotStore)=> { 
+                store = gotStore;
+                return Promise.all([
+                    store.save({dog:'awsome'}),
+                    store.save({cat: 'is evil'})
+                ]);
+            })
+            .then((saved) => {
+                savedArray = saved;
+                return store.getAll();
+            })
+            .then((readFiles) => {
+                readFiles.sort( (a, b) => a._id > b._id ? -1 : 1);
+                savedArray.sort( (a, b) => a._id > b._id ? -1 : 1);
+                assert.deepEqual(readFiles, savedArray);
             });
     });
 
     it('create two store instances, verify that they exist', () => {
-        db.getStore('rat')
+        return db.getStore('rat')
             .then( () => {
-                db.getStore('bat')
-                    .then (()=> {
-                        readDir(rootDir, 'utf8')
-                            .then((names) => {
-                                assert.deepEqual(names, ['bat', 'rat']); 
-                            });
-                    });
-            });
+                return db.getStore('bat');
+            })
+            .then (()=> {
+                return readDir(rootDir, 'utf8');
+            })
+            .then((names) => {
+                assert.deepEqual(names, ['bat', 'rat']); 
+            });          
     });
 });
