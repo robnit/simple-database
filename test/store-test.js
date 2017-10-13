@@ -13,7 +13,7 @@ const promisify = require('util').promisify;
 const rimrafPromise = promisify(rimraf);
 const mkdirpPromise = promisify(mkdirp);
 
-describe.only('make-store.js', () => {
+describe('make-store.js', () => {
 
     beforeEach( () => {
         return rimrafPromise(rootDir)

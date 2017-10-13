@@ -1,6 +1,8 @@
 const assert = require('assert');
 const path = require('path');
+const promisify = require('util').promisify;
 const rimraf = require('rimraf');
+const rimrafPromise = promisify(rimraf);
 const fs = require('fs');
 
 const Store = require('../lib/make-store');
@@ -11,20 +13,16 @@ const db = new Db(rootDir);
 
 describe('make-db.js', () => {
 
-    beforeEach( done => {
-        rimraf(rootDir, err => {
-            if (err) return done(err);
-            done();
-        });
+    beforeEach( () => {
+        return rimrafPromise(rootDir);
     });
 
-    it('calling getStore returns an instance of the Store class with correct rootDir property', (done) => {
-        db.getStore('dog', (err, store)=>{
-            if (err) return done(err);
-            assert.ok(store instanceof Store);
-            assert.equal(store.rootDir, path.join(rootDir, 'dog'));
-            done();
-        });
+    it.only('calling getStore returns an instance of the Store class with correct rootDir property', () => {
+        db.getStore('dog')
+            .then( store => {
+                assert.ok(store instanceof Store);
+                assert.equal(store.rootDir, path.join(rootDir, 'dog'));
+            });
     });
 
     it('create two files in a database and verify that they exist', (done) => {
