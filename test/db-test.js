@@ -28,8 +28,10 @@ describe('make-db.js', () => {
 
     it('create two files in a database and verify that they exist', () => {
         let savedArray = null;
+        let store = null;
         return db.getStore('dog')
-            .then( (store) => {
+            .then( (gotStore) => {
+                store = gotStore;
                 return Promise.all([
                     store.save({dog:'awsome'}),
                     store.save({cat: 'is evil'})
@@ -37,29 +39,21 @@ describe('make-db.js', () => {
             })
             .then( (saved) => {
                 savedArray = saved.sort((a,b) => a._id > b._id ? -1 : 1);
-                console.log('saved array is', savedArray);
-                const storePath = path.join(rootDir, 'dog');
-                return readdirPromise(storePath);
+                return store.getAll();
             })
             .then( (readFiles) => {
-                console.log('readFiles is', readFiles);
                 readFiles.sort((a,b) => a._id > b._id ? -1 : 1);
                 return assert.deepEqual(readFiles, savedArray);
             });
     });
 
 
-    // it('create two store instances, verify that they exist', (done) => {
-    //     db.getStore('rat', (err) => {
-    //         if (err) return done(err);
-    //         db.getStore('bat', (err) => {
-    //             if (err) return done(err);
-    //             fs.readdir(rootDir, 'utf8', (err, names) => {
-    //                 assert.deepEqual(names, ['bat', 'rat']);
-    //                 done();
-    //             });
-    //         });
-    //     });
-    // });
+    it('create two store instances, verify that they exist', () => {
+        return db.getStore('rat')
+            .then( () => db.getStore('bat') )
+            .then( () => readdirPromise(rootDir) )
+            .then( (names) => assert.deepEqual(names, ['bat', 'rat']) );
+    
+    });
 
 });
