@@ -72,22 +72,17 @@ describe('make-store.js', () => {
             { data: 'dog' }
         ];
         let saved = null;
-        return Promise.all([ 
-            toSaveArray.map(element => {
-                return store.save(element);
+
+        Promise.all(
+            toSaveArray.map(a => store.save(a) )
+        )
+            .then( savedArray => {
+                saved = savedArray;
+                console.log('savedArray is', savedArray);
+                console.log('saved is', saved);
+                return store.getAll();
             })
-        ])
-            .then( (promiseArray) => {  
-                saved = promiseArray;
-                return promiseArray.sort(function(a, b){
-                    if(a._id < b._id) return -1;
-                    if(a._id > b._id) return 1;
-                });
-            })
-            .then( (sortedPromiseArray) => {
-                console.log('get all is', store.getAll());                
-                assert.deepEqual(saved, sortedPromiseArray);
-            });
+            .then( result => assert.deepEqual(saved, result) );
     });
 
     it('getAll() returns empty array if no files exist in directory', () => {
