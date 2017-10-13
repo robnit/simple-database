@@ -38,7 +38,6 @@ describe('make-store.js', () => {
     });
 
 
-
     it('call callback with null if id is bad', () => {
         store.get('bad id')
             .then( (objectGot) => assert.deepEqual(objectGot, null) );
@@ -49,11 +48,9 @@ describe('make-store.js', () => {
         const myObject = { data : 'i like it removed please' };
         return store.save(myObject)
             .then( (objectSaved) => {
-                console.log('objectSaved is', objectSaved);
                 return store.remove(objectSaved._id);
             })
             .then( (objectRemoved) => {
-                console.log('objectRemoved is', objectRemoved);
                 assert.deepEqual(objectRemoved, {removed: true});
             });
     });
@@ -73,16 +70,18 @@ describe('make-store.js', () => {
         ];
         let saved = null;
 
-        Promise.all(
+        return Promise.all(
             toSaveArray.map(a => store.save(a) )
         )
             .then( savedArray => {
-                saved = savedArray;
-                console.log('savedArray is', savedArray);
-                console.log('saved is', saved);
+                saved = savedArray.sort((a,b) => a._id > b._id ? -1 : 1);
                 return store.getAll();
             })
-            .then( result => assert.deepEqual(saved, result) );
+            .then( result => {
+                console.log('saved is', saved);
+                console.log('resut is', result);
+                assert.deepEqual(saved, result);
+            });
     });
 
     it('getAll() returns empty array if no files exist in directory', () => {
