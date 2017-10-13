@@ -66,7 +66,7 @@ describe('make-store.js', () => {
             });
     });
 
-    it('get an array of objects from getAll method', () => {
+    it.only('get an array of objects from getAll method', () => {
         const toSaveArray = [ 
             { data: 'cat' },
             { data: 'dog' }
@@ -85,11 +85,12 @@ describe('make-store.js', () => {
                 });
             })
             .then( (sortedPromiseArray) => {
+                console.log('get all is', store.getAll());                
                 assert.deepEqual(saved, sortedPromiseArray);
             });
     });
 
-    it.only('getAll() returns empty array if no files exist in directory', () => {
+    it('getAll() returns empty array if no files exist in directory', () => {
         return store.getAll()
             .then( (objectArray) => { 
                 assert.deepEqual( objectArray, [] ); });
