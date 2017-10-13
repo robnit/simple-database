@@ -13,7 +13,7 @@ const promisify = require('util').promisify;
 const rimrafPromise = promisify(rimraf);
 const mkdirpPromise = promisify(mkdirp);
 
-describe('make-store.js', () => {
+describe.only('make-store.js', () => {
 
     beforeEach( () => {
         return rimrafPromise(rootDir)
@@ -63,7 +63,7 @@ describe('make-store.js', () => {
             });
     });
 
-    it.only('get an array of objects from getAll method', () => {
+    it('get an array of objects from getAll method', () => {
         const toSaveArray = [ 
             { data: 'cat' },
             { data: 'dog' }
@@ -78,8 +78,6 @@ describe('make-store.js', () => {
                 return store.getAll();
             })
             .then( result => {
-                console.log('saved is', saved);
-                console.log('resut is', result);
                 assert.deepEqual(saved, result);
             });
     });
