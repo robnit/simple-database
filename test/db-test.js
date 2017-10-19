@@ -10,9 +10,10 @@ const Store = require('../lib/make-store');
 const Db = require('../lib/make-db');
 
 const rootDir = path.join(__dirname, 'test-dir');
-const db = new Db(rootDir);
+
 
 describe('make-db.js', () => {
+    const db = new Db(rootDir);
 
     beforeEach( () => {
         return rimrafPromise(rootDir);

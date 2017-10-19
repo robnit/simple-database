@@ -5,16 +5,15 @@ const rimraf = require('rimraf');
 const mkdirp = require('mkdirp');
 
 const Store = require('../lib/make-store');
-const rootDir = path.join(__dirname, 'test-dir');
-
-const store = new Store(rootDir);
 
 const promisify = require('util').promisify;
 const rimrafPromise = promisify(rimraf);
 const mkdirpPromise = promisify(mkdirp);
 
 describe('make-store.js', () => {
-
+    const rootDir = path.join(__dirname, 'test-dir');
+    const store = new Store(rootDir);
+    
     beforeEach( () => {
         return rimrafPromise(rootDir)
             .then( () => {
@@ -66,7 +65,9 @@ describe('make-store.js', () => {
     it('get an array of objects from getAll method', () => {
         const toSaveArray = [ 
             { data: 'cat' },
-            { data: 'dog' }
+            { data: 'dog' },
+            { data: 'sdf'},
+            { data: '3' }
         ];
         let saved = null;
 
